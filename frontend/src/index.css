@@ -86,30 +86,30 @@ body::after {
   backdrop-filter: blur(8px);
 }
 
-.brand { display: flex; align-items: center; gap: 14px; }
-
-.brand-mark {
-  width: 32px; height: 32px; border-radius: 50%;
-  border: 1px solid var(--amber);
-  display: flex; align-items: center; justify-content: center;
-}
-.brand-mark::after {
-  content: ''; width: 10px; height: 10px; border-radius: 50%;
-  background: var(--amber);
-}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-text { display: flex; flex-direction: column; gap: 4px; }
 
 .brand-name {
-  font-family: var(--font-serif); font-weight: 500; font-size: 19px;
+  font-family: var(--font-serif); font-weight: 400; font-size: 24px;
   letter-spacing: -0.01em;
+  display: flex; align-items: baseline; gap: 2px;
+}
+.brand-word-mono {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 17px;
+  letter-spacing: 0.22em;
+  color: var(--cream);
+  text-transform: uppercase;
+  padding-right: 1px;
 }
 .brand-name em {
   font-style: italic; color: var(--amber); font-weight: 400;
 }
 
 .brand-tag {
-  font-family: var(--font-mono); font-size: 10px;
-  color: var(--cream-faint); letter-spacing: 0.2em; text-transform: uppercase;
-  padding-left: 14px; border-left: 0.5px solid var(--border);
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--cream-faint); letter-spacing: 0.18em; text-transform: uppercase;
 }
 
 .app-nav { display: flex; gap: 4px; }
@@ -672,6 +672,9 @@ body::after {
 
 /* ============ RESPONSIVE ============ */
 
+/* Mobile bottom nav — hidden on desktop */
+.mobile-bottom-nav { display: none; }
+
 @media (max-width: 900px) {
   .form-grid { grid-template-columns: 1fr; gap: 28px; }
   .analytics-grid { grid-template-columns: 1fr; }
@@ -679,6 +682,79 @@ body::after {
   .app-header { padding: 14px 18px; flex-wrap: wrap; gap: 12px; }
   .app-main { padding: 22px 18px; }
   .header-meta { display: none; }
+}
+
+@media (max-width: 640px) {
+  /* Hide desktop nav in header */
+  .app-nav  { display: none; }
+  .app-footer { display: none; }
+
+  /* Compact header — brand only */
+  .app-header { padding: 10px 16px; }
+  .brand-tag  { display: none; }
+
+  /* Pad content above bottom nav */
+  .app-main { padding-bottom: 88px; }
+
+  /* ── Mobile bottom nav bar ── */
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 9999;
+    background: rgba(12, 8, 5, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 0.5px solid rgba(212,148,99,0.15);
+    padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+    gap: 0;
+  }
+
+  .mobile-nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 2px 8px;
+    min-height: 56px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(240,227,208,0.3);
+    transition: color 0.15s;
+  }
+
+  .mobile-nav-btn.active {
+    color: var(--amber);
+  }
+
+  .mobile-nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 32px;
+    border-radius: 10px;
+    transition: background 0.15s, transform 0.12s;
+  }
+
+  .mobile-nav-btn.active .mobile-nav-icon {
+    background: rgba(212,148,99,0.13);
+    transform: translateY(-1px);
+  }
+
+  .mobile-nav-btn:active .mobile-nav-icon {
+    transform: scale(0.88);
+  }
+
+  .mobile-nav-label {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
 }
 
 /* ============ AUTH ============ */
@@ -823,6 +899,32 @@ body::after {
   letter-spacing: 0.05em;
   margin-bottom: 20px;
   text-align: center;
+}
+
+.settings-signout {
+  margin-top: 48px;
+  padding-top: 28px;
+  border-top: 0.5px solid var(--border);
+  display: flex;
+  justify-content: center;
+}
+
+.btn-signout {
+  background: none;
+  border: 0.5px solid var(--border-mid);
+  color: var(--cream-faint);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 28px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.btn-signout:hover {
+  color: var(--rust);
+  border-color: var(--rust);
 }
 
 /* ============ ANIMATIONS ============ */

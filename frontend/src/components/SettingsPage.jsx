@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { logout as apiLogout } from '../utils/api';
 
 export default function SettingsPage() {
+  const { logout } = useAuth();
   const [settings, setSettings] = useState({
     tempUnit: localStorage.getItem('tempUnit') || 'fahrenheit',
     weightUnit: localStorage.getItem('weightUnit') || 'grams',
@@ -140,6 +143,20 @@ export default function SettingsPage() {
         </button>
         <button type="button" className="btn btn-primary" onClick={handleSave}>
           Save preferences →
+        </button>
+      </div>
+
+      <div className="settings-signout">
+        <button
+          type="button"
+          className="btn btn-signout"
+          onClick={async () => {
+            const rt = localStorage.getItem('refreshToken');
+            if (rt) await apiLogout(rt).catch(() => {});
+            logout();
+          }}
+        >
+          Sign out
         </button>
       </div>
     </div>

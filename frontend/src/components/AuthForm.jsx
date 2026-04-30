@@ -43,9 +43,9 @@ export default function AuthForm() {
       <div className="auth-card">
         <div className="auth-brand">
           <BrewLogo size={40} />
-          <div>
-            <div className="brand-name"><em>Dialed</em></div>
-            <div className="brand-tag" style={{ paddingLeft: 0, border: 'none', marginTop: 2 }}>Est. 2026 · OKC</div>
+          <div className="brand-text">
+            <div className="brand-name"><span className="brand-word-mono">DIAL</span><em>ed</em></div>
+            <div className="brand-tag">Coffee Brew Tracker · Est. 2026</div>
           </div>
         </div>
 
