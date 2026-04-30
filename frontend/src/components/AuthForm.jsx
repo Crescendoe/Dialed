@@ -42,11 +42,9 @@ export default function AuthForm() {
     <div className="auth-wrap">
       <div className="auth-card">
         <div className="auth-brand">
-          <BrewLogo size={40} />
-          <div className="brand-text">
-            <div className="brand-name"><span className="brand-word-mono">DIAL</span><em>ed</em></div>
-            <div className="brand-tag">Coffee Brew Tracker · Est. 2026</div>
-          </div>
+          <BrewLogo size={48} />
+          <div className="brand-name"><span className="brand-word-mono">DIAL</span><em>ed</em></div>
+          <div className="brand-tag">Coffee Brew Tracker · Est. 2026</div>
         </div>
 
         <div className="auth-tabs">
