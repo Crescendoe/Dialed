@@ -3,19 +3,19 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using BrewTracker.Api.Data;
-using BrewTracker.Api.DTOs;
+using Dialed.Api.Data;
+using Dialed.Api.DTOs;
 
-namespace BrewTracker.Api.Controllers;
+namespace Dialed.Api.Controllers;
 
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class AnalyticsController : ControllerBase
 {
-    private readonly BrewTrackerContext _db;
+    private readonly DialedContext _db;
 
-    public AnalyticsController(BrewTrackerContext db) => _db = db;
+    public AnalyticsController(DialedContext db) => _db = db;
 
     // GET api/analytics/averages
     [HttpGet("averages")]

@@ -824,3 +824,135 @@ body::after {
   margin-bottom: 20px;
   text-align: center;
 }
+
+/* ============ ANIMATIONS ============ */
+
+/* Tab content entrance — slides up on every tab switch */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Auth card — dramatic entrance from below */
+@keyframes authSlide {
+  from { opacity: 0; transform: translateY(36px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+
+/* Logo breathes with a slow amber glow */
+@keyframes logoBreath {
+  0%, 100% { filter: drop-shadow(0 0 0px transparent); }
+  50%       { filter: drop-shadow(0 0 10px rgba(212,148,99,0.45)); }
+}
+
+/* API-live dot pulse */
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.45; transform: scale(0.8); }
+}
+
+/* Loading shimmer */
+@keyframes loadShimmer {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.85; }
+}
+
+/* Analytics bar fill from left */
+@keyframes barFill {
+  from { width: 0 !important; }
+}
+
+/* Brew table row slide in from left */
+@keyframes rowIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Apply ── */
+
+.tab-content {
+  animation: fadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.auth-card {
+  animation: authSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.brew-logo {
+  animation: logoBreath 5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.header-meta-dot:not(.error):not(.warning) {
+  animation: dotPulse 2.5s ease-in-out infinite;
+}
+
+.app-loading {
+  animation: loadShimmer 2s ease-in-out infinite;
+}
+
+.bar-fill {
+  animation: barFill 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Staggered row entrances */
+.brew-table tbody tr {
+  animation: rowIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.brew-table tbody tr:nth-child(1)  { animation-delay: 0.00s; }
+.brew-table tbody tr:nth-child(2)  { animation-delay: 0.04s; }
+.brew-table tbody tr:nth-child(3)  { animation-delay: 0.07s; }
+.brew-table tbody tr:nth-child(4)  { animation-delay: 0.10s; }
+.brew-table tbody tr:nth-child(5)  { animation-delay: 0.12s; }
+.brew-table tbody tr:nth-child(6)  { animation-delay: 0.14s; }
+.brew-table tbody tr:nth-child(7)  { animation-delay: 0.16s; }
+.brew-table tbody tr:nth-child(8)  { animation-delay: 0.18s; }
+.brew-table tbody tr:nth-child(9)  { animation-delay: 0.20s; }
+.brew-table tbody tr:nth-child(10) { animation-delay: 0.22s; }
+.brew-table tbody tr:nth-child(11) { animation-delay: 0.24s; }
+.brew-table tbody tr:nth-child(12) { animation-delay: 0.26s; }
+
+/* ── Micro-interactions ── */
+
+.btn        { transition: box-shadow 0.25s, background 0.2s, transform 0.08s; }
+.btn:active { transform: scale(0.97); }
+
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 0 28px rgba(212,148,99,0.22), 0 2px 10px rgba(0,0,0,0.35);
+}
+
+.nav-btn { transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.08s; }
+.nav-btn:active { transform: scale(0.94); }
+
+.filter-pill { transition: color 0.15s, border-color 0.15s, background 0.15s; }
+
+.brew-table tbody tr { transition: background 0.15s ease; }
+.brew-table tbody tr:hover { background: rgba(212,148,99,0.05); }
+
+.chart-card, .best-card { transition: border-color 0.25s ease; }
+.chart-card:hover, .best-card:hover { border-color: rgba(212,148,99,0.24); }
+
+.field-group:focus-within .field-label {
+  color: rgba(212,148,99,0.7);
+  transition: color 0.2s ease;
+}
+
+/* Delete button fades in on row hover */
+.delete-btn {
+  opacity: 0.25;
+  transition: opacity 0.15s, color 0.15s;
+}
+.brew-table tbody tr:hover .delete-btn { opacity: 1; }
+
+/* Score circles bounce on hover */
+.overall-circle {
+  transition: background 0.1s, border-color 0.1s, transform 0.1s;
+}
+.overall-circle:hover { transform: scale(1.2); }
+
+/* Param cells warm on hover */
+.param-cell { transition: background 0.2s; }
+.param-cell:hover {
+  background: rgba(212,148,99,0.07);
+  border-radius: 3px;
+}

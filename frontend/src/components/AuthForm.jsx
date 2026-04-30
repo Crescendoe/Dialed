@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { register, login } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
+import BrewLogo from './BrewLogo';
 
 export default function AuthForm() {
   const { login: authLogin } = useAuth();
@@ -41,9 +42,11 @@ export default function AuthForm() {
     <div className="auth-wrap">
       <div className="auth-card">
         <div className="auth-brand">
-          <div className="brand-mark" />
-          <div className="brand-name">Brew <em>Tracker</em></div>
-          <div className="brand-tag">Est. 2026 · OKC</div>
+          <BrewLogo size={40} />
+          <div>
+            <div className="brand-name"><em>Dialed</em></div>
+            <div className="brand-tag" style={{ paddingLeft: 0, border: 'none', marginTop: 2 }}>Est. 2026 · OKC</div>
+          </div>
         </div>
 
         <div className="auth-tabs">

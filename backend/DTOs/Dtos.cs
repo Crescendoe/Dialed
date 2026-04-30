@@ -1,4 +1,4 @@
-namespace BrewTracker.Api.DTOs;
+namespace Dialed.Api.DTOs;
 
 // ---- Brews ----
 

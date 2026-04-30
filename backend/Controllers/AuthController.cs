@@ -7,23 +7,23 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using BrewTracker.Api.Data;
-using BrewTracker.Api.DTOs;
-using BrewTracker.Api.Models;
+using Dialed.Api.Data;
+using Dialed.Api.DTOs;
+using Dialed.Api.Models;
 
-namespace BrewTracker.Api.Controllers;
+namespace Dialed.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _users;
-    private readonly BrewTrackerContext           _db;
+    private readonly DialedContext           _db;
     private readonly IConfiguration               _config;
 
     public AuthController(
         UserManager<ApplicationUser> users,
-        BrewTrackerContext db,
+        DialedContext db,
         IConfiguration config)
     {
         _users  = users;
