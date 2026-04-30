@@ -1,0 +1,18 @@
+# .NET
+backend/bin/
+backend/obj/
+backend/*.user
+backend/appsettings.Development.json
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.suo
