@@ -1,18 +1,18 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BrewTracker.Api.Data;
-using BrewTracker.Api.DTOs;
+using Dialed.Api.Data;
+using Dialed.Api.DTOs;
 
-namespace BrewTracker.Api.Controllers;
+namespace Dialed.Api.Controllers;
 
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class LookupsController : ControllerBase
 {
-    private readonly BrewTrackerContext _db;
-    public LookupsController(BrewTrackerContext db) => _db = db;
+    private readonly DialedContext _db;
+    public LookupsController(DialedContext db) => _db = db;
 
     [HttpGet("bean-origins")]
     public async Task<ActionResult<IEnumerable<BeanOriginDto>>> GetOrigins() =>

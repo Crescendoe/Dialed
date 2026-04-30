@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using BrewTracker.Api.Data;
-using BrewTracker.Api.Models;
+using Dialed.Api.Data;
+using Dialed.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "Brew Tracker API", Version = "v1" });
+    c.SwaggerDoc("v1", new() { Title = "Dialed API", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name         = "Authorization",
@@ -34,7 +34,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddDbContext<BrewTrackerContext>(options =>
+builder.Services.AddDbContext<DialedContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BrewTracker")));
 
 builder.Services
@@ -46,7 +46,7 @@ builder.Services
         options.Password.RequireNonAlphanumeric = false;
         options.User.RequireUniqueEmail         = true;
     })
-    .AddEntityFrameworkStores<BrewTrackerContext>()
+    .AddEntityFrameworkStores<DialedContext>()
     .AddDefaultTokenProviders();
 
 var jwtSection = builder.Configuration.GetSection("Jwt");

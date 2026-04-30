@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using BrewTracker.Api.Models;
+using Dialed.Api.Models;
 
-namespace BrewTracker.Api.Data;
+namespace Dialed.Api.Data;
 
-public class BrewTrackerContext : IdentityDbContext<ApplicationUser>
+public class DialedContext : IdentityDbContext<ApplicationUser>
 {
-    public BrewTrackerContext(DbContextOptions<BrewTrackerContext> options) : base(options) { }
+    public DialedContext(DbContextOptions<DialedContext> options) : base(options) { }
 
     public DbSet<Brew>         Brews         => Set<Brew>();
     public DbSet<BeanOrigin>   BeanOrigins   => Set<BeanOrigin>();

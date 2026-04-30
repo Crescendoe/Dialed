@@ -5,6 +5,7 @@ import BrewForm from './components/BrewForm';
 import BrewTable from './components/BrewTable';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
 import SettingsPage from './components/SettingsPage';
+import BrewLogo from './components/BrewLogo';
 import { useLookups, useBrews } from './hooks/useBrewData';
 import { logout as apiLogout } from './utils/api';
 
@@ -42,8 +43,8 @@ function AppInner() {
     <div className="app">
       <header className="app-header">
         <div className="brand">
-          <div className="brand-mark" />
-          <div className="brand-name">Brew <em>Tracker</em></div>
+          <BrewLogo size={34} />
+          <div className="brand-name"><em>Dialed</em></div>
           <div className="brand-tag">Est. 2026 · OKC</div>
         </div>
         <nav className="app-nav">
@@ -69,20 +70,23 @@ function AppInner() {
       </header>
 
       <main className="app-main">
-        {tab === 'log' && (
-          <BrewForm
-            origins={origins}
-            methods={methods}
-            onSaved={() => { refresh(); setTab('history'); }}
-          />
-        )}
-        {tab === 'history' && (
-          brewsLoading
-            ? <div className="chart-loading" style={{ padding: '60px 0' }}>Loading brews…</div>
-            : <BrewTable brews={brews} methods={methods} onRefresh={refresh} />
-        )}
-        {tab === 'analytics' && <AnalyticsDashboard methods={methods} />}
-        {tab === 'settings' && <SettingsPage />}
+        {/* key={tab} remounts on every tab change, re-triggering the fadeUp animation */}
+        <div key={tab} className="tab-content">
+          {tab === 'log' && (
+            <BrewForm
+              origins={origins}
+              methods={methods}
+              onSaved={() => { refresh(); setTab('history'); }}
+            />
+          )}
+          {tab === 'history' && (
+            brewsLoading
+              ? <div className="chart-loading" style={{ padding: '60px 0' }}>Loading brews…</div>
+              : <BrewTable brews={brews} methods={methods} onRefresh={refresh} />
+          )}
+          {tab === 'analytics' && <AnalyticsDashboard methods={methods} />}
+          {tab === 'settings' && <SettingsPage />}
+        </div>
       </main>
 
       <footer className="app-footer">
@@ -91,7 +95,7 @@ function AppInner() {
           <span>React · .NET 8 · SQL Server</span>
         </div>
         <div className="footer-meta">
-          <span>github.com/Crescendoe/Brew-Tracker</span>
+          <span>github.com/Crescendoe/Dialed</span>
         </div>
       </footer>
     </div>

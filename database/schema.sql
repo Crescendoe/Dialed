@@ -5,9 +5,9 @@
 SET QUOTED_IDENTIFIER ON;
 GO
 
-CREATE DATABASE BrewTracker;
+CREATE DATABASE Dialed;
 GO
-USE BrewTracker;
+USE Dialed;
 GO
 
 -- ============================================================

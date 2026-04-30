@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace BrewTracker.Api.Models;
+namespace Dialed.Api.Models;
 
 public class ApplicationUser : IdentityUser { }
 

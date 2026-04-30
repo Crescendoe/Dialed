@@ -2,20 +2,20 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BrewTracker.Api.Data;
-using BrewTracker.Api.DTOs;
-using BrewTracker.Api.Models;
+using Dialed.Api.Data;
+using Dialed.Api.DTOs;
+using Dialed.Api.Models;
 
-namespace BrewTracker.Api.Controllers;
+namespace Dialed.Api.Controllers;
 
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class BrewsController : ControllerBase
 {
-    private readonly BrewTrackerContext _db;
+    private readonly DialedContext _db;
 
-    public BrewsController(BrewTrackerContext db) => _db = db;
+    public BrewsController(DialedContext db) => _db = db;
 
     // GET api/brews
     [HttpGet]
