@@ -35,7 +35,10 @@ export default function AnalyticsDashboard({ methods }) {
         setBest(b);
         setTrend(tr);
       })
-      .catch(console.error)
+      .catch(err => {
+        console.error('Analytics load failed:', err);
+        setLoading(false);
+      })
       .finally(() => setLoading(false));
   }, [selectedMethodId]);
 
@@ -59,7 +62,7 @@ export default function AnalyticsDashboard({ methods }) {
           >{m.name}</button>
         ))}
         <span className="filter-count">
-          {loading ? 'Querying…' : 'usp_GetBestBrewParameters · usp_GetAverageBrewParams'}
+          {loading ? 'Querying…' : 'Powered by SQL Server stored procedures'}
         </span>
       </div>
 
@@ -252,7 +255,7 @@ function ExtractionScatter({ trend, methodName, loading }) {
             Each dot is a {methodName.toLowerCase()} brew · find your sweet spot
           </div>
         </div>
-        <div className="chart-sub">usp_GetExtractionTrend</div>
+        <div className="chart-sub">usp_GetExtractionTrend · SQL Server</div>
       </div>
 
       {loading ? (

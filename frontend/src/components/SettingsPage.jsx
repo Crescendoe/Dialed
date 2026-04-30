@@ -1,64 +1,55 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useSettings } from '../contexts/SettingsContext';
 import { logout as apiLogout } from '../utils/api';
 
 export default function SettingsPage() {
-  const { logout } = useAuth();
-  const [settings, setSettings] = useState({
-    tempUnit: localStorage.getItem('tempUnit') || 'fahrenheit',
-    weightUnit: localStorage.getItem('weightUnit') || 'grams',
-    defaultRatio: localStorage.getItem('defaultRatio') || '1:17',
-    showAdvancedTaste: localStorage.getItem('showAdvancedTaste') === 'true',
-    theme: localStorage.getItem('theme') || 'dark',
-  });
+  const { logout }                       = useAuth();
+  const { settings, saveSettings, resetSettings } = useSettings();
 
+  const [local, setLocal] = useState({ ...settings });
   const [saved, setSaved] = useState(false);
 
   function update(field, value) {
-    setSettings(s => ({ ...s, [field]: value }));
+    setLocal(s => ({ ...s, [field]: value }));
   }
 
   function handleSave() {
-    localStorage.setItem('tempUnit', settings.tempUnit);
-    localStorage.setItem('weightUnit', settings.weightUnit);
-    localStorage.setItem('defaultRatio', settings.defaultRatio);
-    localStorage.setItem('showAdvancedTaste', settings.showAdvancedTaste);
-    localStorage.setItem('theme', settings.theme);
-    
+    saveSettings(local);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   }
 
   function handleReset() {
-    setSettings({
-      tempUnit: 'fahrenheit',
-      weightUnit: 'grams',
-      defaultRatio: '1:17',
-      showAdvancedTaste: true,
-      theme: 'dark',
+    resetSettings();
+    setLocal({
+      tempUnit:          'fahrenheit',
+      weightUnit:        'grams',
+      defaultRatio:      '1:17',
+      showAdvancedTaste: false,
     });
   }
 
   return (
     <div>
       <div className="section-head">
-        <span className="section-num">⚙</span>
+        <span className="section-num">04</span>
         <h2 className="section-title">Settings & <em>Preferences</em></h2>
         <div className="section-line" />
       </div>
       <p className="section-sub">
-        Customize your brewing experience. These preferences are saved locally in your browser.
+        Customize your brewing experience. Changes apply immediately after saving.
       </p>
 
       <div className="settings-grid">
         <div className="settings-section">
           <h3 className="settings-heading">Measurement Units</h3>
-          
+
           <div className="field-group">
-            <label className="field-label">Temperature Unit</label>
+            <label className="field-label">Temperature</label>
             <select
               className="field-select"
-              value={settings.tempUnit}
+              value={local.tempUnit}
               onChange={e => update('tempUnit', e.target.value)}
             >
               <option value="fahrenheit">Fahrenheit (°F)</option>
@@ -67,10 +58,10 @@ export default function SettingsPage() {
           </div>
 
           <div className="field-group">
-            <label className="field-label">Weight Unit</label>
+            <label className="field-label">Weight</label>
             <select
               className="field-select"
-              value={settings.weightUnit}
+              value={local.weightUnit}
               onChange={e => update('weightUnit', e.target.value)}
             >
               <option value="grams">Grams (g)</option>
@@ -80,60 +71,43 @@ export default function SettingsPage() {
         </div>
 
         <div className="settings-section">
-          <h3 className="settings-heading">Brew Preferences</h3>
-          
+          <h3 className="settings-heading">Brew Defaults</h3>
+
           <div className="field-group">
             <label className="field-label">Default Brew Ratio</label>
             <select
               className="field-select"
-              value={settings.defaultRatio}
+              value={local.defaultRatio}
               onChange={e => update('defaultRatio', e.target.value)}
             >
+              <option value="1:15">1:15 (Stronger)</option>
               <option value="1:16">1:16 (Espresso-style)</option>
               <option value="1:17">1:17 (Standard)</option>
               <option value="1:18">1:18 (Pour over)</option>
               <option value="1:20">1:20 (Immersion)</option>
-              <option value="custom">Custom</option>
             </select>
           </div>
 
           <div className="field-group">
-            <label className="field-label">Show Advanced Taste Profile</label>
+            <label className="field-label">Advanced Taste Profile</label>
             <div className="checkbox-wrapper">
               <input
                 type="checkbox"
                 id="advancedTaste"
-                checked={settings.showAdvancedTaste}
+                checked={local.showAdvancedTaste}
                 onChange={e => update('showAdvancedTaste', e.target.checked)}
               />
               <label htmlFor="advancedTaste">
-                Display Body, Complexity, Aftertaste, and Smoothness sliders
+                Show Body, Complexity, Aftertaste, and Smoothness sliders
               </label>
             </div>
-          </div>
-        </div>
-
-        <div className="settings-section">
-          <h3 className="settings-heading">Appearance</h3>
-          
-          <div className="field-group">
-            <label className="field-label">Theme</label>
-            <select
-              className="field-select"
-              value={settings.theme}
-              onChange={e => update('theme', e.target.value)}
-            >
-              <option value="dark">Dark (Default)</option>
-              <option value="light">Light</option>
-              <option value="auto">Auto (System)</option>
-            </select>
           </div>
         </div>
       </div>
 
       {saved && (
         <div className="settings-message">
-          ✓ Settings saved successfully
+          ✓ Settings saved — changes are now applied
         </div>
       )}
 

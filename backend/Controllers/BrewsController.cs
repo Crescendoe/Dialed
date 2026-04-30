@@ -95,7 +95,7 @@ public class BrewsController : ControllerBase
             BodyScore           = dto.BodyScore,
             ComplexityScore     = dto.ComplexityScore,
             AftertasteScore     = dto.AftertasteScore,
-            SmoothnnessScore    = dto.SmoothnnessScore,
+            SmoothnessScore    = dto.SmoothnessScore,
             OverallScore        = dto.OverallScore,
             Notes               = dto.Notes,
             BrewedAt            = dto.BrewedAt ?? DateTime.UtcNow,
@@ -141,7 +141,7 @@ public class BrewsController : ControllerBase
         b.BodyScore,
         b.ComplexityScore,
         b.AftertasteScore,
-        b.SmoothnnessScore,
+        b.SmoothnessScore,
         b.OverallScore,
         b.Notes,
         b.BrewedAt

@@ -73,10 +73,14 @@ builder.Services
         };
     });
 
+var allowedOrigins = builder.Configuration
+    .GetSection("AllowedOrigins")
+    .Get<string[]>() ?? ["http://localhost:5173"];
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("DevFrontend", policy =>
-        policy.WithOrigins("http://localhost:5173")
+    options.AddPolicy("Frontend", policy =>
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod());
 });
@@ -89,7 +93,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("DevFrontend");
+app.UseCors("Frontend");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

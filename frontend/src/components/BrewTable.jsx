@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { deleteBrew } from '../utils/api';
+import { useSettings } from '../contexts/SettingsContext';
 
 function fmtTime(sec) {
   const m = Math.floor(sec / 60);
@@ -20,6 +21,8 @@ function splitOrigin(originString) {
 }
 
 export default function BrewTable({ brews, methods, onRefresh }) {
+  const { settings } = useSettings();
+  const isCelsius = settings.tempUnit === 'celsius';
   const [methodFilter, setMethodFilter] = useState('');
   const [scoreFilter, setScoreFilter]   = useState(0);
   const [deleting, setDeleting]         = useState(null);
@@ -79,7 +82,7 @@ export default function BrewTable({ brews, methods, onRefresh }) {
         <span className="filter-count">{filtered.length} {filtered.length === 1 ? 'brew' : 'brews'}</span>
       </div>
 
-      <div className="table-wrap">
+      <div className="table-wrap table-scroll">
         <table className="brew-table">
           <thead>
             <tr>
@@ -111,7 +114,11 @@ export default function BrewTable({ brews, methods, onRefresh }) {
                 <td><span className="method-pill">{b.brewMethod}</span></td>
                 <td className="cell-mono">1:{parseFloat(b.brewRatio).toFixed(1)}</td>
                 <td className="cell-mono">{fmtTime(b.extractionTimeSec)}</td>
-                <td className="cell-mono">{b.waterTempFahrenheit ? `${b.waterTempFahrenheit}°F` : '—'}</td>
+                <td className="cell-mono">{b.waterTempFahrenheit
+                  ? isCelsius
+                    ? `${Math.round((b.waterTempFahrenheit - 32) * 5 / 9 * 10) / 10}°C`
+                    : `${b.waterTempFahrenheit}°F`
+                  : '—'}</td>
                 <td className="cell-mono">{b.grindSize || '—'}</td>
                 <td>
                   <span className={`cell-score score-${b.overallScore}`}>{b.overallScore}</span>

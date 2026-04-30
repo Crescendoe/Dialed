@@ -127,7 +127,7 @@ CREATE TABLE Brews (
     BodyScore           TINYINT       NULL CHECK (BodyScore      BETWEEN 1 AND 10),
     ComplexityScore     TINYINT       NULL CHECK (ComplexityScore BETWEEN 1 AND 10),
     AftertasteScore     TINYINT       NULL CHECK (AftertasteScore BETWEEN 1 AND 10),
-    SmoothnnessScore    TINYINT       NULL CHECK (SmoothnnessScore BETWEEN 1 AND 10),
+    SmoothnessScore    TINYINT       NULL CHECK (SmoothnessScore BETWEEN 1 AND 10),
     OverallScore        TINYINT       NOT NULL CHECK (OverallScore BETWEEN 1 AND 10),
 
     Notes               NVARCHAR(1000) NULL,

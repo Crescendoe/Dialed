@@ -1,26 +1,47 @@
 import { useState, useMemo } from 'react';
 import { createBrew } from '../utils/api';
+import { useSettings } from '../contexts/SettingsContext';
 
 const GRIND_SIZES = ['Extra Fine', 'Fine', 'Medium-Fine', 'Medium', 'Medium-Coarse', 'Coarse'];
 
-const initialForm = {
-  beanOriginId: '',
-  brewMethodId: '',
-  coffeeGrams: '18',
-  waterGrams: '270',
-  extractionTimeSec: '225',
-  waterTempFahrenheit: '200',
-  grindSize: 'Medium-Fine',
-  acidityScore: 7,
-  sweetnessScore: 7,
-  bitnessScore: 4,
-  bodyScore: 6,
-  complexityScore: 5,
-  aftertasteScore: 6,
-  smoothnnessScore: 7,
-  overallScore: 8,
-  notes: '',
-};
+const OZ_PER_GRAM = 0.035274;
+const GRAMS_PER_OZ = 28.3495;
+
+function toDisplayWeight(grams, unit) {
+  return unit === 'ounces' ? (grams * OZ_PER_GRAM).toFixed(2) : String(grams);
+}
+
+function toDisplayTemp(fahrenheit, unit) {
+  if (unit === 'celsius') return String(Math.round((fahrenheit - 32) * 5 / 9));
+  return String(fahrenheit);
+}
+
+function getInitialForm(settings) {
+  const ratioMultiplier = parseInt(settings.defaultRatio.split(':')[1]) || 17;
+  const coffeeG = 18;
+  const waterG  = coffeeG * ratioMultiplier;
+  const isOz    = settings.weightUnit === 'ounces';
+  const isCelsius = settings.tempUnit === 'celsius';
+
+  return {
+    beanOriginId:      '',
+    brewMethodId:      '',
+    coffeeGrams:       toDisplayWeight(coffeeG, settings.weightUnit),
+    waterGrams:        toDisplayWeight(waterG,  settings.weightUnit),
+    extractionTimeSec: '225',
+    waterTemp:         toDisplayTemp(200, settings.tempUnit),
+    grindSize:         'Medium-Fine',
+    acidityScore:      7,
+    sweetnessScore:    7,
+    bitnessScore:      4,
+    bodyScore:         6,
+    complexityScore:   5,
+    aftertasteScore:   6,
+    smoothnessScore:   7,
+    overallScore:      8,
+    notes:             '',
+  };
+}
 
 function originLabel(o) {
   let s = o.country;
@@ -29,18 +50,23 @@ function originLabel(o) {
   return s;
 }
 
-function methodSubtitle(methodName, coffee, water) {
+function methodSubtitle(methodName, coffee, water, unit) {
   if (!coffee || !water) return '';
   const c = parseFloat(coffee);
   const w = parseFloat(water);
   if (!c || !w) return '';
-  return `${c}g coffee / ${w}g water · ${methodName || 'standard pour'}`;
+  const u = unit === 'ounces' ? 'oz' : 'g';
+  return `${c}${u} coffee / ${w}${u} water · ${methodName || 'standard pour'}`;
 }
 
 export default function BrewForm({ origins, methods, onSaved }) {
-  const [form, setForm] = useState(initialForm);
+  const { settings } = useSettings();
+  const isOz     = settings.weightUnit === 'ounces';
+  const isCelsius = settings.tempUnit === 'celsius';
+
+  const [form, setForm]     = useState(() => getInitialForm(settings));
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError]   = useState(null);
 
   const ratio = useMemo(() => {
     const c = parseFloat(form.coffeeGrams);
@@ -64,25 +90,38 @@ export default function BrewForm({ origins, methods, onSaved }) {
     setSaving(true);
     setError(null);
     try {
+      // Convert display units back to grams / fahrenheit for storage
+      const coffeeG = isOz
+        ? parseFloat(form.coffeeGrams) * GRAMS_PER_OZ
+        : parseFloat(form.coffeeGrams);
+      const waterG = isOz
+        ? parseFloat(form.waterGrams) * GRAMS_PER_OZ
+        : parseFloat(form.waterGrams);
+      const tempF = form.waterTemp
+        ? isCelsius
+          ? parseFloat(form.waterTemp) * 9 / 5 + 32
+          : parseFloat(form.waterTemp)
+        : null;
+
       await createBrew({
-        beanOriginId:      parseInt(form.beanOriginId),
-        brewMethodId:      parseInt(form.brewMethodId),
-        coffeeGrams:       parseFloat(form.coffeeGrams),
-        waterGrams:        parseFloat(form.waterGrams),
-        extractionTimeSec: parseInt(form.extractionTimeSec),
-        waterTempFahrenheit: form.waterTempFahrenheit ? parseFloat(form.waterTempFahrenheit) : null,
-        grindSize:         form.grindSize || null,
-        acidityScore:      parseInt(form.acidityScore),
-        sweetnessScore:    parseInt(form.sweetnessScore),
-        bitnessScore:      parseInt(form.bitnessScore),
-        bodyScore:         parseInt(form.bodyScore),
-        complexityScore:   parseInt(form.complexityScore),
-        aftertasteScore:   parseInt(form.aftertasteScore),
-        smoothnnessScore:  parseInt(form.smoothnnessScore),
-        overallScore:      parseInt(form.overallScore),
-        notes:             form.notes || null,
+        beanOriginId:        parseInt(form.beanOriginId),
+        brewMethodId:        parseInt(form.brewMethodId),
+        coffeeGrams:         coffeeG,
+        waterGrams:          waterG,
+        extractionTimeSec:   parseInt(form.extractionTimeSec),
+        waterTempFahrenheit: tempF,
+        grindSize:           form.grindSize || null,
+        acidityScore:        parseInt(form.acidityScore),
+        sweetnessScore:      parseInt(form.sweetnessScore),
+        bitnessScore:        parseInt(form.bitnessScore),
+        bodyScore:           parseInt(form.bodyScore),
+        complexityScore:     parseInt(form.complexityScore),
+        aftertasteScore:     parseInt(form.aftertasteScore),
+        smoothnessScore:     parseInt(form.smoothnessScore),
+        overallScore:        parseInt(form.overallScore),
+        notes:               form.notes || null,
       });
-      setForm(initialForm);
+      setForm(getInitialForm(settings));
       onSaved?.();
     } catch (err) {
       setError(err.message);
@@ -92,9 +131,14 @@ export default function BrewForm({ origins, methods, onSaved }) {
   }
 
   function handleReset() {
-    setForm(initialForm);
+    setForm(getInitialForm(settings));
     setError(null);
   }
+
+  const weightUnit = isOz ? 'oz' : 'g';
+  const tempLabel  = isCelsius ? '°C' : '°F';
+  const tempMin    = isCelsius ? 60  : 120;
+  const tempMax    = isCelsius ? 100 : 212;
 
   return (
     <form onSubmit={handleSubmit}>
@@ -142,18 +186,18 @@ export default function BrewForm({ origins, methods, onSaved }) {
 
           <div className="field-row-3">
             <div className="field-group">
-              <label className="field-label">Coffee · g</label>
+              <label className="field-label">Coffee · {weightUnit}</label>
               <input
-                className="field-input" type="number" step="0.1" min="1"
+                className="field-input" type="number" step="0.01" min="0.01"
                 value={form.coffeeGrams}
                 onChange={e => update('coffeeGrams', e.target.value)}
                 required
               />
             </div>
             <div className="field-group">
-              <label className="field-label">Water · g</label>
+              <label className="field-label">Water · {weightUnit}</label>
               <input
-                className="field-input" type="number" step="0.1" min="1"
+                className="field-input" type="number" step="0.01" min="0.01"
                 value={form.waterGrams}
                 onChange={e => update('waterGrams', e.target.value)}
                 required
@@ -172,11 +216,12 @@ export default function BrewForm({ origins, methods, onSaved }) {
 
           <div className="field-row">
             <div className="field-group">
-              <label className="field-label">Temperature · °F</label>
+              <label className="field-label">Temperature · {tempLabel}</label>
               <input
-                className="field-input" type="number" step="0.5" min="120" max="212"
-                value={form.waterTempFahrenheit}
-                onChange={e => update('waterTempFahrenheit', e.target.value)}
+                className="field-input" type="number" step="0.5"
+                min={tempMin} max={tempMax}
+                value={form.waterTemp}
+                onChange={e => update('waterTemp', e.target.value)}
               />
             </div>
             <div className="field-group">
@@ -211,47 +256,21 @@ export default function BrewForm({ origins, methods, onSaved }) {
               1 <em>:</em> {ratio || '—'}
             </div>
             <div className="ratio-detail">
-              {methodSubtitle(selectedMethod?.name, form.coffeeGrams, form.waterGrams)}
+              {methodSubtitle(selectedMethod?.name, form.coffeeGrams, form.waterGrams, settings.weightUnit)}
             </div>
           </div>
 
           <div className="field-group">
             <label className="field-label">Taste profile</label>
-            <TasteSlider
-              label="Acidity"
-              value={form.acidityScore}
-              onChange={v => update('acidityScore', v)}
-            />
-            <TasteSlider
-              label="Sweetness"
-              value={form.sweetnessScore}
-              onChange={v => update('sweetnessScore', v)}
-            />
-            <TasteSlider
-              label="Bitterness"
-              value={form.bitnessScore}
-              onChange={v => update('bitnessScore', v)}
-            />
-            <TasteSlider
-              label="Body"
-              value={form.bodyScore}
-              onChange={v => update('bodyScore', v)}
-            />
-            <TasteSlider
-              label="Complexity"
-              value={form.complexityScore}
-              onChange={v => update('complexityScore', v)}
-            />
-            <TasteSlider
-              label="Aftertaste"
-              value={form.aftertasteScore}
-              onChange={v => update('aftertasteScore', v)}
-            />
-            <TasteSlider
-              label="Smoothness"
-              value={form.smoothnnessScore}
-              onChange={v => update('smoothnnessScore', v)}
-            />
+            <TasteSlider label="Acidity"   value={form.acidityScore}   onChange={v => update('acidityScore',   v)} />
+            <TasteSlider label="Sweetness" value={form.sweetnessScore} onChange={v => update('sweetnessScore', v)} />
+            <TasteSlider label="Bitterness" value={form.bitnessScore}  onChange={v => update('bitnessScore',   v)} />
+            {settings.showAdvancedTaste && <>
+              <TasteSlider label="Body"       value={form.bodyScore}       onChange={v => update('bodyScore',       v)} />
+              <TasteSlider label="Complexity" value={form.complexityScore} onChange={v => update('complexityScore', v)} />
+              <TasteSlider label="Aftertaste" value={form.aftertasteScore} onChange={v => update('aftertasteScore', v)} />
+              <TasteSlider label="Smoothness" value={form.smoothnessScore} onChange={v => update('smoothnessScore', v)} />
+            </>}
           </div>
 
           <div className="overall-card">
@@ -273,7 +292,7 @@ export default function BrewForm({ origins, methods, onSaved }) {
         </div>
       </div>
 
-      {error && <p className="form-error">{error}</p>}
+      {error && <p className="form-error" role="alert">{error}</p>}
 
       <div className="submit-row">
         <button type="button" className="btn btn-secondary" onClick={handleReset}>
@@ -299,6 +318,10 @@ function TasteSlider({ label, value, onChange }) {
         value={value}
         onChange={e => onChange(parseInt(e.target.value))}
         style={{ '--fill': `${fill}%` }}
+        aria-label={`${label} score, ${value} out of 10`}
+        aria-valuenow={value}
+        aria-valuemin={1}
+        aria-valuemax={10}
       />
       <span className="taste-num">{value}</span>
     </div>

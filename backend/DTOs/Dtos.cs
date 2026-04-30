@@ -16,7 +16,7 @@ public record CreateBrewDto(
     byte? BodyScore,
     byte? ComplexityScore,
     byte? AftertasteScore,
-    byte? SmoothnnessScore,
+    byte? SmoothnessScore,
     byte OverallScore,
     string? Notes,
     DateTime? BrewedAt
@@ -38,7 +38,7 @@ public record BrewDto(
     byte? BodyScore,
     byte? ComplexityScore,
     byte? AftertasteScore,
-    byte? SmoothnnessScore,
+    byte? SmoothnessScore,
     byte OverallScore,
     string? Notes,
     DateTime BrewedAt

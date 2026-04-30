@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { SettingsProvider } from './contexts/SettingsContext';
 import AuthForm from './components/AuthForm';
 import BrewForm from './components/BrewForm';
 import BrewTable from './components/BrewTable';
@@ -127,7 +128,9 @@ function AppInner() {
 export default function App() {
   return (
     <AuthProvider>
-      <AppInner />
+      <SettingsProvider>
+        <AppInner />
+      </SettingsProvider>
     </AuthProvider>
   );
 }

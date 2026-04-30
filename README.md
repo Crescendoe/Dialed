@@ -119,7 +119,7 @@ Open SQL Server Management Studio (or `sqlcmd`) and run:
 sqlcmd -S localhost -E -i database/schema.sql
 ```
 
-This creates the `BrewTracker` database, all tables, indexes, stored procedures, and seed data (brew methods + 8 bean origins).
+This creates the `Dialed` database, all tables, indexes, stored procedures, and seed data (brew methods + 8 bean origins).
 
 ### 2 — Backend API
 
@@ -135,11 +135,14 @@ API runs at `http://localhost:5000`. Swagger UI available at `http://localhost:5
 
 ```bash
 cd frontend
+cp .env.example .env.local   # then set VITE_API_URL to your backend URL
 npm install
 npm run dev
 ```
 
 App runs at `http://localhost:5173`.
+
+> **Environment variables:** The frontend reads `VITE_API_URL` to locate the API. In development this defaults to `http://localhost:5000/api`. For production, set it in your hosting platform's environment config or in `.env.local` (gitignored).
 
 ---
 
@@ -177,15 +180,15 @@ This project was built to show practical proficiency with the kind of stack comm
 - **Parameterized queries** everywhere stored procedures are called, never string-built SQL
 - **Normalized lookups** for reference data instead of free-text fields that make GROUP BY queries painful
 - **DTOs as the API contract** — entities never leak out of the API layer
-- **CORS scoped to the dev origin** — not a wildcard
+- **CORS driven by configuration** — origins read from `appsettings.json` per environment, never a wildcard
 - **EF Core for CRUD, raw SQL for analytics** — using the right tool for each job rather than forcing everything through the ORM
 
 ---
 
 ## Potential Extensions
 
-- User authentication (ASP.NET Identity or JWT)
 - Export brew history to CSV
 - Bean origin management UI (add your own origins)
 - Target range overlays on the extraction trend chart (highlight the "sweet spot" window)
-- Mobile-responsive layout improvements
+- React Native mobile app
+- Push notifications for brew reminders

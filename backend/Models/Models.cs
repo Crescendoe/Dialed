@@ -59,7 +59,7 @@ public class Brew
     public byte?  BodyScore         { get; set; }
     public byte?  ComplexityScore   { get; set; }
     public byte?  AftertasteScore   { get; set; }
-    public byte?  SmoothnnessScore  { get; set; }
+    public byte?  SmoothnessScore  { get; set; }
     public byte   OverallScore      { get; set; }
 
     public string?  Notes     { get; set; }
