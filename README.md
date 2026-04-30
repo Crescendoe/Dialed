@@ -173,7 +173,7 @@ App runs at `http://localhost:5173`.
 
 ## What This Demonstrates
 
-This project was built to show practical proficiency with the kind of stack common in enterprise .NET shops — not just that I can write code, but that I understand *why* certain decisions get made:
+This project was built to show practical proficiency with the kind of stack common in enterprise .NET shops. I understand why certain decisions get made:
 
 - **Computed columns over application logic** for derived values that need to be queryable
 - **Stored procedures for analytics** rather than pulling raw data and crunching it in C# — the database engine is better at set-based operations
@@ -182,13 +182,3 @@ This project was built to show practical proficiency with the kind of stack comm
 - **DTOs as the API contract** — entities never leak out of the API layer
 - **CORS driven by configuration** — origins read from `appsettings.json` per environment, never a wildcard
 - **EF Core for CRUD, raw SQL for analytics** — using the right tool for each job rather than forcing everything through the ORM
-
----
-
-## Potential Extensions
-
-- Export brew history to CSV
-- Bean origin management UI (add your own origins)
-- Target range overlays on the extraction trend chart (highlight the "sweet spot" window)
-- React Native mobile app
-- Push notifications for brew reminders
