@@ -87,7 +87,7 @@ function AppInner() {
 
       <footer className="app-footer">
         <div className="footer-meta">
-          <span>v0.1.0</span>
+          <span>v0.2.0</span>
           <span>React · .NET 8 · SQL Server</span>
         </div>
         <div className="footer-meta">

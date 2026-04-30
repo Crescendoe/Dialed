@@ -1,5 +1,7 @@
 # Brew Tracker
 
+**Version 0.2.0**
+
 A data-driven coffee brew logging application built with **React**, **C# .NET 8 Web API**, and **Microsoft SQL Server**. Users log brew sessions — ratios, extraction times, bean origins, taste scores — and the app uses SQL queries, aggregations, and stored procedures to surface patterns and optimal parameters across their brew history.
 
 Built as a portfolio project to demonstrate full-stack proficiency across the same technology stack commonly used in enterprise .NET environments.
@@ -24,9 +26,10 @@ A custom dark "specialty roastery" aesthetic — Fraunces (italic serif) for hea
 ## Features
 
 ### Brew Logging
-- Log brew sessions with coffee/water grams, extraction time, water temperature, grind size, and a 1–10 taste profile (acidity, sweetness, bitterness, overall)
+- Log brew sessions with coffee/water grams, extraction time, water temperature, grind size, and a 1–10 taste profile (acidity, sweetness, bitterness, body, complexity, aftertaste, smoothness, overall)
 - Brew ratio is auto-calculated live in the UI and stored as a computed column in SQL Server
 - Bean origins and brew methods are normalized lookup tables — clean relational design, no free-text mess
+- Includes user authentication, session management, and browser-saved preferences for units, theme, and advanced taste options
 
 ### Brew Log with Filtering
 - Filter logged brews by method, origin, and minimum score
