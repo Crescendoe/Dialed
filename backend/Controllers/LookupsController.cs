@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BrewTracker.Api.Data;
@@ -5,6 +6,7 @@ using BrewTracker.Api.DTOs;
 
 namespace BrewTracker.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class LookupsController : ControllerBase

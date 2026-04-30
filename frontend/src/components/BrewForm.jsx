@@ -14,6 +14,10 @@ const initialForm = {
   acidityScore: 7,
   sweetnessScore: 7,
   bitnessScore: 4,
+  bodyScore: 6,
+  complexityScore: 5,
+  aftertasteScore: 6,
+  smoothnnessScore: 7,
   overallScore: 8,
   notes: '',
 };
@@ -71,6 +75,10 @@ export default function BrewForm({ origins, methods, onSaved }) {
         acidityScore:      parseInt(form.acidityScore),
         sweetnessScore:    parseInt(form.sweetnessScore),
         bitnessScore:      parseInt(form.bitnessScore),
+        bodyScore:         parseInt(form.bodyScore),
+        complexityScore:   parseInt(form.complexityScore),
+        aftertasteScore:   parseInt(form.aftertasteScore),
+        smoothnnessScore:  parseInt(form.smoothnnessScore),
         overallScore:      parseInt(form.overallScore),
         notes:             form.notes || null,
       });
@@ -223,6 +231,26 @@ export default function BrewForm({ origins, methods, onSaved }) {
               label="Bitterness"
               value={form.bitnessScore}
               onChange={v => update('bitnessScore', v)}
+            />
+            <TasteSlider
+              label="Body"
+              value={form.bodyScore}
+              onChange={v => update('bodyScore', v)}
+            />
+            <TasteSlider
+              label="Complexity"
+              value={form.complexityScore}
+              onChange={v => update('complexityScore', v)}
+            />
+            <TasteSlider
+              label="Aftertaste"
+              value={form.aftertasteScore}
+              onChange={v => update('aftertasteScore', v)}
+            />
+            <TasteSlider
+              label="Smoothness"
+              value={form.smoothnnessScore}
+              onChange={v => update('smoothnnessScore', v)}
             />
           </div>
 

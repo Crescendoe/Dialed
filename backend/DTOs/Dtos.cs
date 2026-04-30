@@ -13,6 +13,10 @@ public record CreateBrewDto(
     byte? AcidityScore,
     byte? SweetnessScore,
     byte? BitnessScore,
+    byte? BodyScore,
+    byte? ComplexityScore,
+    byte? AftertasteScore,
+    byte? SmoothnnessScore,
     byte OverallScore,
     string? Notes,
     DateTime? BrewedAt
@@ -31,6 +35,10 @@ public record BrewDto(
     byte? AcidityScore,
     byte? SweetnessScore,
     byte? BitnessScore,
+    byte? BodyScore,
+    byte? ComplexityScore,
+    byte? AftertasteScore,
+    byte? SmoothnnessScore,
     byte OverallScore,
     string? Notes,
     DateTime BrewedAt
@@ -87,3 +95,10 @@ public record ExtractionTrendPointDto(
 
 public record BeanOriginDto(int Id, string Country, string? Region, string? Farm, string? ProcessType);
 public record BrewMethodDto(int Id, string Name, string? Description);
+
+// ---- Auth ----
+
+public record RegisterDto(string Email, string Password);
+public record LoginDto(string Email, string Password);
+public record RefreshRequestDto(string RefreshToken);
+public record AuthResponseDto(string Token, string RefreshToken, string Email);

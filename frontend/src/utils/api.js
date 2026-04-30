@@ -1,28 +1,61 @@
 const BASE = 'http://localhost:5000/api';
 
-async function get(path) {
-  const res = await fetch(`${BASE}${path}`);
-  if (!res.ok) throw new Error(`GET ${path} failed: ${res.status}`);
-  return res.json();
-}
+async function request(method, path, body) {
+  const token   = localStorage.getItem('jwt');
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
 
-async function post(path, body) {
-  const res = await fetch(`${BASE}${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  const opts = { method, headers };
+  if (body !== undefined) opts.body = JSON.stringify(body);
+
+  let res = await fetch(`${BASE}${path}`, opts);
+
+  if (res.status === 401) {
+    const refreshed = await tryRefresh();
+    if (refreshed) {
+      headers['Authorization'] = `Bearer ${localStorage.getItem('jwt')}`;
+      res = await fetch(`${BASE}${path}`, { ...opts, headers });
+    } else {
+      window.dispatchEvent(new Event('auth:logout'));
+      throw new Error('Session expired. Please sign in again.');
+    }
+  }
+
+  if (res.status === 204) return null;
   if (!res.ok) {
     const text = await res.text().catch(() => '');
-    throw new Error(text || `POST ${path} failed: ${res.status}`);
+    throw new Error(text || `Request failed: ${res.status}`);
   }
   return res.json();
 }
 
-async function del(path) {
-  const res = await fetch(`${BASE}${path}`, { method: 'DELETE' });
-  if (!res.ok) throw new Error(`DELETE ${path} failed: ${res.status}`);
+async function tryRefresh() {
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (!refreshToken) return false;
+  try {
+    const res = await fetch(`${BASE}/auth/refresh`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ refreshToken }),
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    localStorage.setItem('jwt',          data.token);
+    localStorage.setItem('refreshToken', data.refreshToken);
+    return true;
+  } catch {
+    return false;
+  }
 }
+
+const get  = (path)       => request('GET',    path);
+const post = (path, body) => request('POST',   path, body);
+const del  = (path)       => request('DELETE', path);
+
+// Auth
+export const register = (email, password) => post('/auth/register', { email, password });
+export const login    = (email, password) => post('/auth/login',    { email, password });
+export const logout   = (refreshToken)    => post('/auth/logout',   { refreshToken });
 
 // Lookups
 export const getBeanOrigins = () => get('/lookups/bean-origins');
@@ -48,7 +81,7 @@ export const getAverages = (filters = {}) => {
   });
   return get(`/analytics/averages?${params.toString()}`);
 };
-export const getBestParams = (brewMethodId, minBrewCount = 3) =>
+export const getBestParams      = (brewMethodId, minBrewCount = 3) =>
   get(`/analytics/best?brewMethodId=${brewMethodId}&minBrewCount=${minBrewCount}`);
 export const getExtractionTrend = (brewMethodId, beanOriginId) => {
   const qs = beanOriginId ? `&beanOriginId=${beanOriginId}` : '';

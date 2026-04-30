@@ -1,19 +1,23 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using BrewTracker.Api.Models;
 
 namespace BrewTracker.Api.Data;
 
-public class BrewTrackerContext : DbContext
+public class BrewTrackerContext : IdentityDbContext<ApplicationUser>
 {
     public BrewTrackerContext(DbContextOptions<BrewTrackerContext> options) : base(options) { }
 
-    public DbSet<Brew> Brews => Set<Brew>();
-    public DbSet<BeanOrigin> BeanOrigins => Set<BeanOrigin>();
-    public DbSet<BrewMethod> BrewMethods => Set<BrewMethod>();
+    public DbSet<Brew>         Brews         => Set<Brew>();
+    public DbSet<BeanOrigin>   BeanOrigins   => Set<BeanOrigin>();
+    public DbSet<BrewMethod>   BrewMethods   => Set<BrewMethod>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // BrewRatio is a computed column — tell EF not to try to insert/update it
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Brew>()
             .Property(b => b.BrewRatio)
             .HasComputedColumnSql("[WaterGrams] / [CoffeeGrams]", stored: true);
@@ -30,7 +34,12 @@ public class BrewTrackerContext : DbContext
             .HasForeignKey(b => b.BrewMethodId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Precision for decimal columns
+        modelBuilder.Entity<Brew>()
+            .HasOne(b => b.User)
+            .WithMany()
+            .HasForeignKey(b => b.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<Brew>().Property(b => b.CoffeeGrams).HasPrecision(6, 2);
         modelBuilder.Entity<Brew>().Property(b => b.WaterGrams).HasPrecision(7, 2);
         modelBuilder.Entity<Brew>().Property(b => b.BrewRatio).HasPrecision(8, 4);

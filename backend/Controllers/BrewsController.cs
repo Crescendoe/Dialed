@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BrewTracker.Api.Data;
@@ -6,6 +8,7 @@ using BrewTracker.Api.Models;
 
 namespace BrewTracker.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class BrewsController : ControllerBase
@@ -15,11 +18,13 @@ public class BrewsController : ControllerBase
     public BrewsController(BrewTrackerContext db) => _db = db;
 
     // GET api/brews
-    // Supports optional filtering by method, origin, score range, and date range.
     [HttpGet]
     public async Task<ActionResult<IEnumerable<BrewDto>>> GetBrews([FromQuery] BrewFilterDto filter)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
         var query = _db.Brews
+            .Where(b => b.UserId == userId)
             .Include(b => b.BeanOrigin)
             .Include(b => b.BrewMethod)
             .AsQueryable();
@@ -51,10 +56,12 @@ public class BrewsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<BrewDto>> GetBrew(int id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
         var brew = await _db.Brews
             .Include(b => b.BeanOrigin)
             .Include(b => b.BrewMethod)
-            .FirstOrDefaultAsync(b => b.Id == id);
+            .FirstOrDefaultAsync(b => b.Id == id && b.UserId == userId);
 
         if (brew is null) return NotFound();
         return Ok(MapToDto(brew));
@@ -64,6 +71,8 @@ public class BrewsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<BrewDto>> CreateBrew(CreateBrewDto dto)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
         var originExists = await _db.BeanOrigins.AnyAsync(o => o.Id == dto.BeanOriginId);
         var methodExists = await _db.BrewMethods.AnyAsync(m => m.Id == dto.BrewMethodId);
 
@@ -72,16 +81,21 @@ public class BrewsController : ControllerBase
 
         var brew = new Brew
         {
+            UserId              = userId,
             BeanOriginId        = dto.BeanOriginId,
             BrewMethodId        = dto.BrewMethodId,
             CoffeeGrams         = dto.CoffeeGrams,
             WaterGrams          = dto.WaterGrams,
             ExtractionTimeSec   = dto.ExtractionTimeSec,
-            WaterTempFahrenheit    = dto.WaterTempFahrenheit,
+            WaterTempFahrenheit = dto.WaterTempFahrenheit,
             GrindSize           = dto.GrindSize,
             AcidityScore        = dto.AcidityScore,
             SweetnessScore      = dto.SweetnessScore,
             BitnessScore        = dto.BitnessScore,
+            BodyScore           = dto.BodyScore,
+            ComplexityScore     = dto.ComplexityScore,
+            AftertasteScore     = dto.AftertasteScore,
+            SmoothnnessScore    = dto.SmoothnnessScore,
             OverallScore        = dto.OverallScore,
             Notes               = dto.Notes,
             BrewedAt            = dto.BrewedAt ?? DateTime.UtcNow,
@@ -91,7 +105,6 @@ public class BrewsController : ControllerBase
         _db.Brews.Add(brew);
         await _db.SaveChangesAsync();
 
-        // Reload with navigation properties so the response is fully populated
         await _db.Entry(brew).Reference(b => b.BeanOrigin).LoadAsync();
         await _db.Entry(brew).Reference(b => b.BrewMethod).LoadAsync();
 
@@ -102,7 +115,9 @@ public class BrewsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteBrew(int id)
     {
-        var brew = await _db.Brews.FindAsync(id);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var brew   = await _db.Brews.FirstOrDefaultAsync(b => b.Id == id && b.UserId == userId);
+
         if (brew is null) return NotFound();
 
         _db.Brews.Remove(brew);
@@ -123,6 +138,10 @@ public class BrewsController : ControllerBase
         b.AcidityScore,
         b.SweetnessScore,
         b.BitnessScore,
+        b.BodyScore,
+        b.ComplexityScore,
+        b.AftertasteScore,
+        b.SmoothnnessScore,
         b.OverallScore,
         b.Notes,
         b.BrewedAt
