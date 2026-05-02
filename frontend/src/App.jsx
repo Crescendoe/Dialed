@@ -31,7 +31,7 @@ function AppInner() {
   if (lookupsError) {
     return (
       <div className="app-loading" style={{ color: '#a85a3c' }}>
-        Couldn't reach API · check the backend is running
+        Couldn't reach API · check the backend is running or refresh the page
       </div>
     );
   }
