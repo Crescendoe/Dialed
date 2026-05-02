@@ -1,10 +1,24 @@
 # Dialed
 
-**Version 0.2.0**
+**Version 0.2.0** &nbsp;|&nbsp; **[Live Demo → www.dialedcoffee.app](https://www.dialedcoffee.app)**
 
 A data-driven coffee brew logging application built with **React**, **C# .NET 8 Web API**, and **Microsoft SQL Server**. Users log brew sessions — ratios, extraction times, bean origins, taste scores — and the app uses SQL queries, aggregations, and stored procedures to surface patterns and optimal parameters across their brew history.
 
 Built as a portfolio project to demonstrate full-stack proficiency across the same technology stack commonly used in enterprise .NET environments.
+
+---
+
+## Live Deployment
+
+| Layer | Service |
+|-------|---------|
+| Frontend | [Azure Static Web Apps](https://azure.microsoft.com/en-us/products/app-service/static) — auto-deploys from GitHub on push to `main` |
+| API | [Azure App Service](https://azure.microsoft.com/en-us/products/app-service) (B1) — .NET 8 on Linux |
+| Database | [Azure SQL Database](https://azure.microsoft.com/en-us/products/azure-sql/database) — serverless tier, autopause when idle |
+| Domain | Custom domain via Namecheap, free SSL via Azure |
+| CI/CD | GitHub Actions — backend deploys on changes to `backend/` |
+
+Environment-specific config is handled via Azure App Service application settings and `appsettings.{Environment}.json`. No secrets are committed to the repo.
 
 ---
 
@@ -14,7 +28,7 @@ Built as a portfolio project to demonstrate full-stack proficiency across the sa
 |------------|-----------------------------------|
 | Front End  | React 18, Vite, custom SVG charts |
 | API        | C# .NET 8 Web API, Entity Framework Core 8 |
-| Database   | Microsoft SQL Server (SQL Server Express works fine) |
+| Database   | Microsoft SQL Server / Azure SQL Database |
 | ORM        | EF Core with raw SQL for stored procedures |
 
 ## Design
