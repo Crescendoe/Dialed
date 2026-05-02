@@ -99,9 +99,7 @@ function AppInner() {
           <span>v0.2.0</span>
           <span>React · .NET 8 · SQL Server</span>
         </div>
-        <div className="footer-meta">
-          <span>github.com/Crescendoe/Dialed</span>
-        </div>
+
       </footer>
 
       {/* Mobile bottom nav — outside header so position:fixed works correctly */}
