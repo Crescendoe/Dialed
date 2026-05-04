@@ -22,7 +22,7 @@ const SIGNOUT_ICON = <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
 function AppInner() {
   const { token, user, logout } = useAuth();
   const [tab, setTab] = useState('log');
-  const { origins, methods, loading: lookupsLoading, error: lookupsError } = useLookups();
+  const { origins, methods, loading: lookupsLoading, error: lookupsError } = useLookups(token);
   const { brews, loading: brewsLoading, error: brewsError, refresh } = useBrews({});
 
   if (!token) return <AuthForm />;
@@ -36,11 +36,11 @@ function AppInner() {
     );
   }
 
-  async function handleLogout() {
-    const rt = localStorage.getItem('refreshToken');
-    if (rt) await apiLogout(rt).catch(() => {});
-    logout();
-  }
+const handleLogout = async () => {
+  const rt = localStorage.getItem('refreshToken');
+  if (rt) await apiLogout(rt).catch(() => {});
+  logout();
+};
 
   return (
     <div className="app">

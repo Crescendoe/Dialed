@@ -1,18 +1,25 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getBeanOrigins, getBrewMethods, getBrews } from '../utils/api';
 
-export function useLookups() {
+export function useLookups(token) {
   const [origins, setOrigins] = useState([]);
   const [methods, setMethods] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!token);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!token) {
+      setLoading(false);
+      setError(null);
+      return;
+    }
+    setLoading(true);
+    setError(null);
     Promise.all([getBeanOrigins(), getBrewMethods()])
       .then(([o, m]) => { setOrigins(o); setMethods(m); })
       .catch(setError)
       .finally(() => setLoading(false));
-  }, []);
+  }, [token]);
 
   return { origins, methods, loading, error };
 }
