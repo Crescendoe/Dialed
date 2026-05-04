@@ -21,7 +21,7 @@ async function request(method, path, body) {
       headers['Authorization'] = `Bearer ${localStorage.getItem('jwt')}`;
       res = await fetch(`${BASE}${path}`, { ...opts, headers });
     } else {
-      window.dispatchEvent(new Event('auth:logout'));
+      if (token) window.dispatchEvent(new Event('auth:logout'));
       throw new Error('Session expired. Please sign in again.');
     }
   }

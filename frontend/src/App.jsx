@@ -23,7 +23,7 @@ function AppInner() {
   const { token, user, logout } = useAuth();
   const [tab, setTab] = useState('log');
   const { origins, methods, loading: lookupsLoading, error: lookupsError } = useLookups(token);
-  const { brews, loading: brewsLoading, error: brewsError, refresh } = useBrews({});
+  const { brews, loading: brewsLoading, error: brewsError, refresh } = useBrews({}, token);
 
   if (!token) return <AuthForm />;
 
