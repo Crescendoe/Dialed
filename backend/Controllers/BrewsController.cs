@@ -19,7 +19,10 @@ public class BrewsController : ControllerBase
 
     // GET api/brews
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BrewDto>>> GetBrews([FromQuery] BrewFilterDto filter)
+    public async Task<ActionResult<IEnumerable<BrewDto>>> GetBrews(
+        [FromQuery] BrewFilterDto filter,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 50) // Default to 50 items per page
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
@@ -44,11 +47,16 @@ public class BrewsController : ControllerBase
         if (filter.To.HasValue)
             query = query.Where(b => b.BrewedAt <= filter.To.Value);
 
+        // Apply Pagination to protect memory and bandwidth
         var brews = await query
             .OrderByDescending(b => b.BrewedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .Select(b => MapToDto(b))
             .ToListAsync();
 
+        // Note: For a complete implementation, you might want to return an object 
+        // containing { Data = brews, TotalCount = totalItems } to help the frontend build pagination UI.
         return Ok(brews);
     }
 
